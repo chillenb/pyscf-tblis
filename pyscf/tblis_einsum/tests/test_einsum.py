@@ -134,7 +134,6 @@ class KnownValues(unittest.TestCase):
         b = np.random.random((3,3,3,3))
         c0 = np.transpose(a, (1,2,3,0)) + b
         tensor_add(a, 'lijk', b, 'ijkl')
-        print(abs(c0-b).max())
         self.assertTrue(abs(c0-b).max() < 1e-14)
 
     def test_tensor_add_scaled(self):
@@ -145,6 +144,13 @@ class KnownValues(unittest.TestCase):
         c0 = alpha*a + beta*b
         tensor_add(a, 'ijkl', b, 'ijkl', alpha=alpha, beta=beta)
         self.assertTrue(abs(c0-b).max() < 1e-14)
+
+    def test_tensor_dot(self):
+        a = np.random.random((3,3,3,3))
+        b = np.random.random((3,3,3,3))
+        ans = np.einsum('lijk,ijkl->', a, b)
+        ans2 = tensor_dot(a, 'lijk', b, 'ijkl')
+        self.assertTrue(abs(ans-ans2) < 1e-14)
 
 
 
